@@ -130,7 +130,12 @@ private async Task NavigateToItemsAsync()
         await _navigationService.NavigateToAsync("UserListPage");
     }
 
-    
+    [RelayCommand]
+private async Task NavigateToRentalsAsync()
+{
+    await _navigationService.NavigateToAsync(nameof(StarterApp.Views.RentalsPage));
+}
+
 
     /// @brief Refreshes the dashboard data
     /// @details Relay command that reloads user data and simulates a refresh operation

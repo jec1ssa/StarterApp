@@ -81,4 +81,9 @@ public class RentalDto
     public DateTime CreatedAt { get; set; }
 }
 
+public class RentalsResponse
+{
+    public List<RentalDto> Rentals { get; set; } = new();
+    public int TotalRentals { get; set; }
+}
 

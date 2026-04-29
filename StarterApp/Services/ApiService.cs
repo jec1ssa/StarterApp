@@ -35,6 +35,35 @@ public class ApiService : IApiService
     return categoriesResponse?.Categories ?? new List<CategoryDto>();
 }
 
+public async Task<List<RentalDto>> GetIncomingRentalsAsync()
+{
+    using var response = await _httpClient.GetAsync("rentals/incoming");
+
+    if (!response.IsSuccessStatusCode)
+    {
+        var errorText = await response.Content.ReadAsStringAsync();
+        throw new InvalidOperationException(errorText);
+    }
+
+    var rentalsResponse = await response.Content.ReadFromJsonAsync<RentalsResponse>(_jsonOptions);
+    return rentalsResponse?.Rentals ?? new List<RentalDto>();
+}
+
+public async Task<List<RentalDto>> GetOutgoingRentalsAsync()
+{
+    using var response = await _httpClient.GetAsync("rentals/outgoing");
+
+    if (!response.IsSuccessStatusCode)
+    {
+        var errorText = await response.Content.ReadAsStringAsync();
+        throw new InvalidOperationException(errorText);
+    }
+
+    var rentalsResponse = await response.Content.ReadFromJsonAsync<RentalsResponse>(_jsonOptions);
+    return rentalsResponse?.Rentals ?? new List<RentalDto>();
+}
+
+
 public async Task<RentalDto?> CreateRentalAsync(CreateRentalRequest request)
 {
     using var response = await _httpClient.PostAsJsonAsync("rentals", request, _jsonOptions);

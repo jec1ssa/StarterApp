@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StarterApp.Views.RentalsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="{Binding Title}">
+
+    <Grid Padding="20" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0"
+               Text="Rental Requests"
+               FontSize="28"
+               FontAttributes="Bold" />
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="10">
+            <Button Grid.Column="0"
+                    Text="Outgoing"
+                    Command="{Binding ShowOutgoingRentalsCommand}" />
+
+            <Button Grid.Column="1"
+                    Text="Incoming"
+                    Command="{Binding ShowIncomingRentalsCommand}" />
+        </Grid>
+
+        <Border Grid.Row="2"
+                BackgroundColor="#330000"
+                Stroke="#EF5350"
+                StrokeThickness="1"
+                Padding="10"
+                IsVisible="{Binding HasError}">
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="#EF5350" />
+        </Border>
+
+        <Grid Grid.Row="3">
+
+            <CollectionView ItemsSource="{Binding OutgoingRentals}"
+                            IsVisible="{Binding ShowIncoming, Converter={StaticResource InvertedBoolConverter}}">
+                <CollectionView.EmptyView>
+                    <Label Text="No outgoing rentals found."
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Stroke="#555"
+                                StrokeThickness="1"
+                                Padding="15"
+                                Margin="0,6"
+                                BackgroundColor="#222">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="{Binding ItemTitle}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="White" />
+                                <Label Text="{Binding OwnerName, StringFormat='Owner: {0}'}"
+                                       TextColor="#CCCCCC" />
+                                <Label Text="{Binding Status, StringFormat='Status: {0}'}"
+                                       TextColor="#B39DDB"
+                                       FontAttributes="Bold" />
+                                <Label Text="{Binding TotalPrice, StringFormat='Total: £{0:F2}'}"
+                                       TextColor="#CCCCCC" />
+                                <Label Text="{Binding StartDate, StringFormat='Start: {0:dd/MM/yyyy}'}"
+                                       TextColor="#CCCCCC" />
+                                <Label Text="{Binding EndDate, StringFormat='End: {0:dd/MM/yyyy}'}"
+                                       TextColor="#CCCCCC" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <CollectionView ItemsSource="{Binding IncomingRentals}"
+                            IsVisible="{Binding ShowIncoming}">
+                <CollectionView.EmptyView>
+                    <Label Text="No incoming rentals found."
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Stroke="#555"
+                                StrokeThickness="1"
+                                Padding="15"
+                                Margin="0,6"
+                                BackgroundColor="#222">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="{Binding ItemTitle}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="White" />
+                                <Label Text="{Binding BorrowerName, StringFormat='Borrower: {0}'}"
+                                       TextColor="#CCCCCC" />
+                                <Label Text="{Binding Status, StringFormat='Status: {0}'}"
+                                       TextColor="#B39DDB"
+                                       FontAttributes="Bold" />
+                                <Label Text="{Binding TotalPrice, StringFormat='Total: £{0:F2}'}"
+                                       TextColor="#CCCCCC" />
+                                <Label Text="{Binding StartDate, StringFormat='Start: {0:dd/MM/yyyy}'}"
+                                       TextColor="#CCCCCC" />
+                                <Label Text="{Binding EndDate, StringFormat='End: {0:dd/MM/yyyy}'}"
+                                       TextColor="#CCCCCC" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </Grid>
+    </Grid>
+</ContentPage>
