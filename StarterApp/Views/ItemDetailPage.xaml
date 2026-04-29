@@ -28,8 +28,31 @@
 
             <Label Text="{Binding Item.IsAvailable, StringFormat='Available: {0}'}" />
 
-            <Button Text="Request Rental"
-                    Margin="0,20,0,0" />
+            <Label Text="Rental Dates"
+       FontSize="20"
+       FontAttributes="Bold"
+       Margin="0,20,0,0" />
+
+<Label Text="Start Date" />
+<DatePicker Date="{Binding StartDate}" />
+
+<Label Text="End Date" />
+<DatePicker Date="{Binding EndDate}" />
+
+<Border BackgroundColor="#003300"
+        Stroke="#4CAF50"
+        StrokeThickness="1"
+        Padding="10"
+        IsVisible="{Binding HasSuccess}">
+    <Label Text="{Binding SuccessMessage}"
+           TextColor="#4CAF50" />
+</Border>
+
+<Button Text="Request Rental"
+        Command="{Binding RequestRentalCommand}"
+        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+        Margin="0,20,0,0" />
+
 
             <Label Text="{Binding ErrorMessage}"
                    TextColor="Red"

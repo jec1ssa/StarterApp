@@ -35,6 +35,20 @@ public class ApiService : IApiService
     return categoriesResponse?.Categories ?? new List<CategoryDto>();
 }
 
+public async Task<RentalDto?> CreateRentalAsync(CreateRentalRequest request)
+{
+    using var response = await _httpClient.PostAsJsonAsync("rentals", request, _jsonOptions);
+
+    if (!response.IsSuccessStatusCode)
+    {
+        var errorText = await response.Content.ReadAsStringAsync();
+        throw new InvalidOperationException(errorText);
+    }
+
+    return await response.Content.ReadFromJsonAsync<RentalDto>(_jsonOptions);
+}
+
+
 public async Task<ItemDto?> CreateItemAsync(CreateItemRequest request)
 {
     using var response = await _httpClient.PostAsJsonAsync("items", request, _jsonOptions);

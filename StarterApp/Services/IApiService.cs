@@ -6,5 +6,7 @@ public interface IApiService
     Task<ItemDto?> GetItemByIdAsync(int id);
     Task<List<CategoryDto>> GetCategoriesAsync();
 Task<ItemDto?> CreateItemAsync(CreateItemRequest request);
+Task<RentalDto?> CreateRentalAsync(CreateRentalRequest request);
+
 
 }
