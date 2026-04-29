@@ -1,12 +1,19 @@
-﻿using StarterApp.ViewModels;
+﻿using Microsoft.Extensions.DependencyInjection;
+using StarterApp.ViewModels;
+using StarterApp.Views;
 
 namespace StarterApp;
 
 public partial class AppShell : Shell
 {
-	public AppShell(AppShellViewModel viewModel)
+	public AppShell(AppShellViewModel viewModel, IServiceProvider serviceProvider)
 	{	
-		BindingContext = viewModel;
 		InitializeComponent();
+		BindingContext = viewModel;
+
+		Items.Add(new ShellContent
+		{
+			Content = serviceProvider.GetRequiredService<ItemsListPage>()
+		});
 	}
 }

@@ -1,0 +1,66 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="StarterApp.Views.ItemsListPage"
+             Title="{Binding Title}">
+
+    <Grid Padding="20"
+          RowDefinitions="Auto,Auto,Auto,*"
+          RowSpacing="15">
+
+        <Label Text="Rental Marketplace"
+               FontSize="28"
+               FontAttributes="Bold" />
+
+        <ActivityIndicator Grid.Row="1"
+                           IsRunning="{Binding IsBusy}"
+                           IsVisible="{Binding IsBusy}" />
+
+        <Border Grid.Row="2"
+                Padding="12"
+                BackgroundColor="#FFF4F4"
+                Stroke="#D64545"
+                IsVisible="{Binding HasError}">
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="#8A1F1F" />
+        </Border>
+
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding Items}">
+            <CollectionView.EmptyView>
+                <Label Text="No items found."
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="12"
+                            Margin="0,0,0,10"
+                            Stroke="#DDDDDD">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="{Binding Title}"
+                                   FontSize="18"
+                                   FontAttributes="Bold" />
+                            <Label Text="{Binding Description}"
+                                   FontSize="14"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="2" />
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="{Binding Category}"
+                                       FontSize="13" />
+                                <Label Text="{Binding Location}"
+                                       FontSize="13" />
+                                <Label Text="{Binding DailyRate, StringFormat='{}{0:C}/day'}"
+                                       FontSize="13"
+                                       FontAttributes="Bold" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>
