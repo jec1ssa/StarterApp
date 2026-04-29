@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StarterApp.Views.CreateItemPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="14">
+
+            <Label Text="Create Item"
+                   FontSize="28"
+                   FontAttributes="Bold" />
+
+            <Label Text="Title" />
+            <Entry Text="{Binding TitleInput}"
+                   Placeholder="e.g. Cordless Drill" />
+
+            <Label Text="Description" />
+            <Editor Text="{Binding Description}"
+                    Placeholder="Describe the item"
+                    AutoSize="TextChanges"
+                    HeightRequest="110" />
+
+            <Label Text="Daily Rate" />
+            <Entry Text="{Binding DailyRate}"
+                   Placeholder="e.g. 10"
+                   Keyboard="Numeric" />
+
+            <Label Text="Category" />
+            <Picker ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory}"
+                    ItemDisplayBinding="{Binding Name}" />
+
+            <Label Text="Latitude" />
+            <Entry Text="{Binding Latitude}"
+                   Keyboard="Numeric" />
+
+            <Label Text="Longitude" />
+            <Entry Text="{Binding Longitude}"
+                   Keyboard="Numeric" />
+
+            <Border BackgroundColor="#330000"
+                    Stroke="#EF5350"
+                    StrokeThickness="1"
+                    Padding="10"
+                    IsVisible="{Binding HasError}">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#EF5350" />
+            </Border>
+
+            <Button Text="Create Item"
+                    Command="{Binding CreateItemCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+
+            <Button Text="Cancel"
+                    Command="{Binding CancelCommand}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -12,8 +12,9 @@ public partial class AppShell : Shell
 		BindingContext = viewModel;
 
 		Items.Add(new ShellContent
-		{
-			Content = serviceProvider.GetRequiredService<ItemsListPage>()
-		});
+{
+    Content = serviceProvider.GetRequiredService<LoginPage>()
+});
+
 	}
 }

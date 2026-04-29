@@ -8,13 +8,36 @@ namespace StarterApp.ViewModels;
 public partial class ItemsListViewModel : BaseViewModel
 {
     private readonly IApiService _apiService;
+    private readonly INavigationService _navigationService;
 
     public ObservableCollection<ItemDto> Items { get; } = new();
 
-    public ItemsListViewModel(IApiService apiService)
+    [ObservableProperty]
+    private ItemDto? selectedItem;
+
+    public ItemsListViewModel(IApiService apiService, INavigationService navigationService)
     {
         _apiService = apiService;
+        _navigationService = navigationService;
         Title = "Rental Marketplace";
+    }
+
+    partial void OnSelectedItemChanged(ItemDto? value)
+    {
+        if (value == null)
+            return;
+
+        _ = GoToItemDetailAsync(value);
+        SelectedItem = null;
+    }
+
+    [RelayCommand]
+    private async Task GoToItemDetailAsync(ItemDto item)
+    {
+        if (item == null)
+            return;
+
+        await _navigationService.NavigateToAsync($"{nameof(StarterApp.Views.ItemDetailPage)}?itemId={item.Id}");
     }
 
     [RelayCommand]
@@ -43,4 +66,11 @@ public partial class ItemsListViewModel : BaseViewModel
             IsBusy = false;
         }
     }
+
+    [RelayCommand]
+private async Task GoToCreateItemAsync()
+{
+    await _navigationService.NavigateToAsync(nameof(StarterApp.Views.CreateItemPage));
+}
+
 }

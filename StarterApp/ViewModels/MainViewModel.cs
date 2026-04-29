@@ -89,6 +89,13 @@ public partial class MainViewModel : BaseViewModel
         }
     }
 
+[RelayCommand]
+private async Task NavigateToItemsAsync()
+{
+    await _navigationService.NavigateToAsync(nameof(StarterApp.Views.ItemsListPage));
+}
+
+
     /// @brief Navigates to the user profile page
     /// @details Relay command that navigates to the profile management page
     /// @return A task representing the asynchronous navigation operation
@@ -122,6 +129,8 @@ public partial class MainViewModel : BaseViewModel
         
         await _navigationService.NavigateToAsync("UserListPage");
     }
+
+    
 
     /// @brief Refreshes the dashboard data
     /// @details Relay command that reloads user data and simulates a refresh operation

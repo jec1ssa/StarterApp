@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StarterApp.Views.ItemDetailPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="12">
+
+            <Label Text="{Binding Item.Title}"
+                   FontSize="28"
+                   FontAttributes="Bold" />
+
+            <Label Text="{Binding Item.Description}"
+                   FontSize="16" />
+
+            <Label Text="{Binding Item.Category, StringFormat='Category: {0}'}" />
+
+            <Label Text="{Binding Item.OwnerName, StringFormat='Owner: {0}'}" />
+
+            <Label Text="{Binding Item.DailyRate, StringFormat='£{0:F2} per day'}"
+                   FontSize="20"
+                   FontAttributes="Bold" />
+
+            <Label Text="{Binding Item.AverageRating, StringFormat='Average rating: {0:F1} stars'}" />
+
+            <Label Text="{Binding Item.TotalReviews, StringFormat='Reviews: {0}'}" />
+
+            <Label Text="{Binding Item.IsAvailable, StringFormat='Available: {0}'}" />
+
+            <Button Text="Request Rental"
+                    Margin="0,20,0,0" />
+
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding HasError}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
