@@ -95,6 +95,12 @@ public partial class MainViewModel : BaseViewModel
         await _navigationService.NavigateToAsync(nameof(StarterApp.Views.ItemsListPage));
     }
 
+    [RelayCommand]
+    private async Task NavigateToNearbyItemsAsync()
+    {
+        await _navigationService.NavigateToAsync(nameof(StarterApp.Views.NearbyItemsPage));
+    }
+
 
     /// @brief Navigates to the user profile page
     /// @details Relay command that navigates to the profile management page

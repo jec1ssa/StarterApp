@@ -5,6 +5,20 @@ public class ItemsResponse
     public List<ItemDto> Items { get; set; } = new();
 }
 
+public class NearbyItemsResponse
+{
+    public List<ItemDto> Items { get; set; } = new();
+    public SearchLocationDto? SearchLocation { get; set; }
+    public double Radius { get; set; }
+    public int TotalResults { get; set; }
+}
+
+public class SearchLocationDto
+{
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+}
+
 public class ItemDto
 {
     public int Id { get; set; }
@@ -19,6 +33,7 @@ public class ItemDto
     public decimal? OwnerRating { get; set; }
     public double? Latitude { get; set; }
     public double? Longitude { get; set; }
+    public double? Distance { get; set; }
     public decimal? AverageRating { get; set; }
     public int TotalReviews { get; set; }
     public bool IsAvailable { get; set; }

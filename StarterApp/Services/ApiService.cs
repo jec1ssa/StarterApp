@@ -35,6 +35,29 @@ public class ApiService : IApiService
         return categoriesResponse?.Categories ?? new List<CategoryDto>();
     }
 
+    public async Task<List<ItemDto>> GetNearbyItemsAsync(
+        double latitude,
+        double longitude,
+        double radiusKm,
+        string? categorySlug = null)
+    {
+        var query = $"items/nearby?lat={latitude:F6}&lon={longitude:F6}&radius={radiusKm:F1}";
+
+        if (!string.IsNullOrWhiteSpace(categorySlug))
+            query += $"&category={Uri.EscapeDataString(categorySlug)}";
+
+        using var response = await _httpClient.GetAsync(query);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        var nearbyResponse = await response.Content.ReadFromJsonAsync<NearbyItemsResponse>(_jsonOptions);
+        return nearbyResponse?.Items ?? new List<ItemDto>();
+    }
+
     public async Task<List<RentalDto>> GetIncomingRentalsAsync()
     {
         using var response = await _httpClient.GetAsync("rentals/incoming");

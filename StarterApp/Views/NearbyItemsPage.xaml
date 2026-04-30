@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StarterApp.Views.NearbyItemsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Name="NearbyItemsPageRoot"
+             Title="{Binding Title}">
+
+    <Grid Padding="20" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0"
+               Text="Nearby Items"
+               FontSize="28"
+               FontAttributes="Bold" />
+
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <VerticalStackLayout Grid.Column="0" Spacing="4">
+                    <Label Text="Latitude" />
+                    <Entry Text="{Binding Latitude}" Keyboard="Numeric" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="4">
+                    <Label Text="Longitude" />
+                    <Entry Text="{Binding Longitude}" Keyboard="Numeric" />
+                </VerticalStackLayout>
+            </Grid>
+
+            <Label Text="{Binding RadiusKm, StringFormat='Radius: {0:F0} km'}" />
+            <Slider Minimum="1"
+                    Maximum="50"
+                    Value="{Binding RadiusKm}" />
+
+            <Picker Title="Category"
+                    ItemsSource="{Binding Categories}"
+                    SelectedItem="{Binding SelectedCategory}"
+                    ItemDisplayBinding="{Binding Name}" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Grid.Column="0"
+                        Text="Use Location"
+                        Command="{Binding UseCurrentLocationCommand}" />
+                <Button Grid.Column="1"
+                        Text="Search"
+                        Command="{Binding SearchNearbyCommand}" />
+            </Grid>
+        </VerticalStackLayout>
+
+        <Border Grid.Row="2"
+                BackgroundColor="#330000"
+                Stroke="#EF5350"
+                StrokeThickness="1"
+                Padding="10"
+                IsVisible="{Binding HasError}">
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="#EF5350" />
+        </Border>
+
+        <Label Grid.Row="3"
+               Text="{Binding ResultsSummary}"
+               FontAttributes="Bold" />
+
+        <CollectionView Grid.Row="4"
+                        ItemsSource="{Binding Items}">
+            <CollectionView.EmptyView>
+                <Label Text="No nearby items found."
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="#555"
+                            StrokeThickness="1"
+                            Padding="15"
+                            Margin="0,6"
+                            BackgroundColor="#222">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding BindingContext.GoToItemDetailCommand, Source={x:Reference NearbyItemsPageRoot}}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="{Binding Title}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="White" />
+
+                            <Label Text="{Binding Description}"
+                                   FontSize="14"
+                                   TextColor="#CCCCCC"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="2" />
+
+                            <Label Text="{Binding Category, StringFormat='Category: {0}'}"
+                                   TextColor="#CCCCCC" />
+
+                            <Label Text="{Binding Distance, StringFormat='Distance: {0:F1} km'}"
+                                   TextColor="#CCCCCC" />
+
+                            <Label Text="{Binding DailyRate, StringFormat='£{0:F2} per day'}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="#B39DDB" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
