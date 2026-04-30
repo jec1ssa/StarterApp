@@ -9,18 +9,45 @@ public partial class RentalsViewModel : BaseViewModel
 {
     private readonly IRentalService _rentalService;
     private readonly INavigationService _navigationService;
+    private readonly List<RentalDto> _allIncomingRentals = new();
+    private readonly List<RentalDto> _allOutgoingRentals = new();
 
     public ObservableCollection<RentalDto> IncomingRentals { get; } = new();
     public ObservableCollection<RentalDto> OutgoingRentals { get; } = new();
+    public ObservableCollection<string> StatusFilters { get; } = new()
+    {
+        "All",
+        RentalStatuses.Requested,
+        RentalStatuses.Approved,
+        RentalStatuses.OutForRent,
+        RentalStatuses.Overdue,
+        RentalStatuses.Returned,
+        RentalStatuses.Completed,
+        RentalStatuses.Rejected
+    };
 
     [ObservableProperty]
     private bool showIncoming;
+
+    [ObservableProperty]
+    private string selectedStatusFilter = "All";
+
+    [ObservableProperty]
+    private string successMessage = "";
+
+    [ObservableProperty]
+    private bool hasSuccess;
 
     public RentalsViewModel(IRentalService rentalService, INavigationService navigationService)
     {
         _rentalService = rentalService;
         _navigationService = navigationService;
         Title = "Rental Requests";
+    }
+
+    partial void OnSelectedStatusFilterChanged(string value)
+    {
+        ApplyFilters();
     }
 
     [RelayCommand]
@@ -48,17 +75,36 @@ public partial class RentalsViewModel : BaseViewModel
 
     private async Task RefreshRentalsAsync()
     {
-        IncomingRentals.Clear();
-        OutgoingRentals.Clear();
+        _allIncomingRentals.Clear();
+        _allOutgoingRentals.Clear();
 
         var incoming = await _rentalService.GetIncomingRentalsAsync();
         var outgoing = await _rentalService.GetOutgoingRentalsAsync();
 
-        foreach (var rental in incoming)
+        _allIncomingRentals.AddRange(incoming);
+        _allOutgoingRentals.AddRange(outgoing);
+
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        IncomingRentals.Clear();
+        OutgoingRentals.Clear();
+
+        foreach (var rental in FilterByStatus(_allIncomingRentals))
             IncomingRentals.Add(rental);
 
-        foreach (var rental in outgoing)
+        foreach (var rental in FilterByStatus(_allOutgoingRentals))
             OutgoingRentals.Add(rental);
+    }
+
+    private IEnumerable<RentalDto> FilterByStatus(IEnumerable<RentalDto> rentals)
+    {
+        if (SelectedStatusFilter == "All")
+            return rentals;
+
+        return rentals.Where(rental => rental.Status == SelectedStatusFilter);
     }
 
     [RelayCommand]
@@ -115,9 +161,13 @@ public partial class RentalsViewModel : BaseViewModel
         {
             IsBusy = true;
             ClearError();
+            HasSuccess = false;
+            SuccessMessage = "";
 
             await updateStatusAsync(rental);
             await RefreshRentalsAsync();
+            SuccessMessage = successMessage;
+            HasSuccess = true;
         }
         catch (Exception ex)
         {

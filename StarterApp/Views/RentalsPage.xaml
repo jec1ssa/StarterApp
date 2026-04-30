@@ -10,6 +10,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -30,17 +31,41 @@
                     Command="{Binding ShowIncomingRentalsCommand}" />
         </Grid>
 
-        <Border Grid.Row="2"
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="10">
+            <Picker Grid.Column="0"
+                    Title="Status"
+                    ItemsSource="{Binding StatusFilters}"
+                    SelectedItem="{Binding SelectedStatusFilter}" />
+
+            <Button Grid.Column="1"
+                    Text="Refresh"
+                    Command="{Binding LoadRentalsCommand}" />
+        </Grid>
+
+        <VerticalStackLayout Grid.Row="3" Spacing="8">
+            <Border BackgroundColor="#003300"
+                    Stroke="#4CAF50"
+                    StrokeThickness="1"
+                    Padding="10"
+                    IsVisible="{Binding HasSuccess}">
+                <Label Text="{Binding SuccessMessage}"
+                       TextColor="#4CAF50" />
+            </Border>
+
+            <Border
                 BackgroundColor="#330000"
                 Stroke="#EF5350"
                 StrokeThickness="1"
                 Padding="10"
                 IsVisible="{Binding HasError}">
-            <Label Text="{Binding ErrorMessage}"
-                   TextColor="#EF5350" />
-        </Border>
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#EF5350" />
+            </Border>
+        </VerticalStackLayout>
 
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="4">
 
             <CollectionView ItemsSource="{Binding OutgoingRentals}"
                             IsVisible="{Binding ShowIncoming, Converter={StaticResource InvertedBoolConverter}}">
