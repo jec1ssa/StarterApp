@@ -80,6 +80,13 @@
                                             Command="{Binding BindingContext.MarkReturnedCommand, Source={x:Reference RentalsPageRoot}}"
                                             CommandParameter="{Binding .}" />
                                 </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="8"
+                                                       IsVisible="{Binding CanReview}">
+                                    <Button Text="Review"
+                                            Command="{Binding BindingContext.ReviewRentalCommand, Source={x:Reference RentalsPageRoot}}"
+                                            CommandParameter="{Binding .}" />
+                                </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

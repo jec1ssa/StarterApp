@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="StarterApp.Views.ReviewsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="{Binding Title}">
+
+    <Grid Padding="20" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <VerticalStackLayout Grid.Row="0" Spacing="6">
+            <Label Text="Reviews"
+                   FontSize="28"
+                   FontAttributes="Bold" />
+            <Label Text="{Binding ItemTitle}"
+                   FontSize="16" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Row="1"
+                             Spacing="10"
+                             IsVisible="{Binding CanSubmitReview}">
+            <Label Text="Leave a Review"
+                   FontSize="20"
+                   FontAttributes="Bold" />
+
+            <Label Text="{Binding Rating, StringFormat='Rating: {0} / 5'}" />
+            <Slider Minimum="1"
+                    Maximum="5"
+                    Value="{Binding Rating}" />
+
+            <Editor Text="{Binding Comment}"
+                    Placeholder="Comment"
+                    AutoSize="TextChanges"
+                    HeightRequest="100" />
+
+            <Button Text="Submit Review"
+                    Command="{Binding SubmitReviewCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout Grid.Row="2" Spacing="8">
+            <Border BackgroundColor="#003300"
+                    Stroke="#4CAF50"
+                    StrokeThickness="1"
+                    Padding="10"
+                    IsVisible="{Binding HasSuccess}">
+                <Label Text="{Binding SuccessMessage}"
+                       TextColor="#4CAF50" />
+            </Border>
+
+            <Border BackgroundColor="#330000"
+                    Stroke="#EF5350"
+                    StrokeThickness="1"
+                    Padding="10"
+                    IsVisible="{Binding HasError}">
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="#EF5350" />
+            </Border>
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding Reviews}">
+            <CollectionView.EmptyView>
+                <Label Text="No reviews yet."
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="#555"
+                            StrokeThickness="1"
+                            Padding="15"
+                            Margin="0,6"
+                            BackgroundColor="#222">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="{Binding ReviewerName}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="White" />
+                            <Label Text="{Binding Rating, StringFormat='Rating: {0} / 5'}"
+                                   TextColor="#B39DDB"
+                                   FontAttributes="Bold" />
+                            <Label Text="{Binding Comment}"
+                                   TextColor="#CCCCCC" />
+                            <Label Text="{Binding CreatedAt, StringFormat='Posted: {0:dd/MM/yyyy}'}"
+                                   TextColor="#CCCCCC" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

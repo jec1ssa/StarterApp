@@ -17,6 +17,29 @@ public class RentalService : IRentalService
     public async Task<List<RentalDto>> GetOutgoingRentalsAsync() =>
         (await _rentalRepository.GetOutgoingAsync()).ToList();
 
+    public Task<RentalDto?> RequestRentalAsync(ItemDto item, DateTime startDate, DateTime endDate)
+    {
+        if (item.OwnerId <= 0)
+            throw new InvalidOperationException("Item owner details are required before requesting a rental.");
+
+        ValidateRentalDates(startDate, endDate);
+
+        return _rentalRepository.CreateAsync(new CreateRentalRequest
+        {
+            ItemId = item.Id,
+            StartDate = startDate.ToString("yyyy-MM-dd"),
+            EndDate = endDate.ToString("yyyy-MM-dd")
+        });
+    }
+
+    public decimal CalculateTotalPrice(decimal dailyRate, DateTime startDate, DateTime endDate)
+    {
+        ValidateRentalDates(startDate, endDate);
+
+        var days = (endDate.Date - startDate.Date).Days;
+        return dailyRate * days;
+    }
+
     public Task<RentalStatusUpdateDto?> ApproveAsync(RentalDto rental) =>
         UpdateStatusAsync(rental, RentalStatuses.Approved, RentalStatuses.Requested);
 
@@ -48,5 +71,14 @@ public class RentalService : IRentalService
             rental.Status = result.Status;
 
         return result;
+    }
+
+    private static void ValidateRentalDates(DateTime startDate, DateTime endDate)
+    {
+        if (startDate.Date < DateTime.Today)
+            throw new InvalidOperationException("Start date cannot be in the past.");
+
+        if (endDate.Date <= startDate.Date)
+            throw new InvalidOperationException("End date must be after start date.");
     }
 }

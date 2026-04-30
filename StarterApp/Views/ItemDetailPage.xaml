@@ -28,6 +28,9 @@
 
             <Label Text="{Binding Item.IsAvailable, StringFormat='Available: {0}'}" />
 
+            <Button Text="View Reviews"
+                    Command="{Binding ViewReviewsCommand}" />
+
             <Label Text="Edit Listing"
                    FontSize="20"
                    FontAttributes="Bold"
@@ -74,6 +77,9 @@
 
 <Label Text="End Date" />
 <DatePicker Date="{Binding EndDate}" />
+
+<Label Text="{Binding EstimatedTotalPrice, StringFormat='Estimated total: £{0:F2}'}"
+       FontAttributes="Bold" />
 
 <Border BackgroundColor="#003300"
         Stroke="#4CAF50"

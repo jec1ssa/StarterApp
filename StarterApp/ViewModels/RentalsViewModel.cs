@@ -8,6 +8,7 @@ namespace StarterApp.ViewModels;
 public partial class RentalsViewModel : BaseViewModel
 {
     private readonly IRentalService _rentalService;
+    private readonly INavigationService _navigationService;
 
     public ObservableCollection<RentalDto> IncomingRentals { get; } = new();
     public ObservableCollection<RentalDto> OutgoingRentals { get; } = new();
@@ -15,9 +16,10 @@ public partial class RentalsViewModel : BaseViewModel
     [ObservableProperty]
     private bool showIncoming;
 
-    public RentalsViewModel(IRentalService rentalService)
+    public RentalsViewModel(IRentalService rentalService, INavigationService navigationService)
     {
         _rentalService = rentalService;
+        _navigationService = navigationService;
         Title = "Rental Requests";
     }
 
@@ -125,5 +127,22 @@ public partial class RentalsViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task ReviewRentalAsync(RentalDto rental)
+    {
+        if (rental == null)
+            return;
+
+        if (!rental.CanReview)
+        {
+            SetError("Only completed rentals can be reviewed.");
+            return;
+        }
+
+        var itemTitle = Uri.EscapeDataString(rental.ItemTitle);
+        await _navigationService.NavigateToAsync(
+            $"{nameof(StarterApp.Views.ReviewsPage)}?itemId={rental.ItemId}&rentalId={rental.Id}&itemTitle={itemTitle}");
     }
 }

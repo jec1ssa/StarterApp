@@ -44,6 +44,8 @@ public class ItemDto
 public class ReviewDto
 {
     public int Id { get; set; }
+    public int RentalId { get; set; }
+    public int ReviewerId { get; set; }
     public int Rating { get; set; }
     public string Comment { get; set; } = "";
     public string ReviewerName { get; set; } = "";
@@ -108,6 +110,7 @@ public class RentalDto
     public bool CanMarkOutForRent => Status == RentalStatuses.Approved;
     public bool CanMarkReturned => Status == RentalStatuses.OutForRent || Status == RentalStatuses.Overdue;
     public bool CanComplete => Status == RentalStatuses.Returned;
+    public bool CanReview => Status == RentalStatuses.Completed;
 }
 
 public class RentalsResponse
@@ -131,7 +134,7 @@ public class RentalStatusUpdateDto
 public class ReviewsResponse
 {
     public List<ReviewDto> Reviews { get; set; } = new();
-    public decimal AverageRating { get; set; }
+    public decimal? AverageRating { get; set; }
     public int TotalReviews { get; set; }
     public int Page { get; set; }
     public int PageSize { get; set; }

@@ -9,8 +9,9 @@ namespace StarterApp.ViewModels;
 public partial class ItemDetailViewModel : BaseViewModel
 {
     private readonly IItemRepository _itemRepository;
-    private readonly IRentalRepository _rentalRepository;
+    private readonly IRentalService _rentalService;
     private readonly IAuthenticationService _authenticationService;
+    private readonly INavigationService _navigationService;
 
     [ObservableProperty]
     private int itemId;
@@ -34,9 +35,11 @@ public partial class ItemDetailViewModel : BaseViewModel
     private bool canEditItem;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EstimatedTotalPrice))]
     private DateTime startDate = DateTime.Today;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(EstimatedTotalPrice))]
     private DateTime endDate = DateTime.Today.AddDays(1);
 
     [ObservableProperty]
@@ -45,14 +48,27 @@ public partial class ItemDetailViewModel : BaseViewModel
     [ObservableProperty]
     private bool hasSuccess;
 
+    public decimal EstimatedTotalPrice
+    {
+        get
+        {
+            if (Item == null || StartDate.Date < DateTime.Today || EndDate.Date <= StartDate.Date)
+                return 0;
+
+            return _rentalService.CalculateTotalPrice(Item.DailyRate, StartDate, EndDate);
+        }
+    }
+
     public ItemDetailViewModel(
         IItemRepository itemRepository,
-        IRentalRepository rentalRepository,
-        IAuthenticationService authenticationService)
+        IRentalService rentalService,
+        IAuthenticationService authenticationService,
+        INavigationService navigationService)
     {
         _itemRepository = itemRepository;
-        _rentalRepository = rentalRepository;
+        _rentalService = rentalService;
         _authenticationService = authenticationService;
+        _navigationService = navigationService;
         Title = "Item Details";
     }
 
@@ -84,6 +100,7 @@ public partial class ItemDetailViewModel : BaseViewModel
             EditDailyRate = Item.DailyRate;
             EditIsAvailable = Item.IsAvailable;
             CanEditItem = _authenticationService.CurrentUser?.Id == Item.OwnerId;
+            OnPropertyChanged(nameof(EstimatedTotalPrice));
         }
         catch (Exception ex)
         {
@@ -107,21 +124,9 @@ public partial class ItemDetailViewModel : BaseViewModel
             return;
         }
 
-        if (!CanEditItem)
+        if (CanEditItem)
         {
-            SetError("Only the owner can update this item.");
-            return;
-        }
-
-        if (StartDate.Date < DateTime.Today)
-        {
-            SetError("Start date cannot be in the past.");
-            return;
-        }
-
-        if (EndDate.Date <= StartDate.Date)
-        {
-            SetError("End date must be after start date.");
+            SetError("You cannot request to rent your own item.");
             return;
         }
 
@@ -132,14 +137,7 @@ public partial class ItemDetailViewModel : BaseViewModel
             SuccessMessage = "";
             HasSuccess = false;
 
-            var request = new CreateRentalRequest
-            {
-                ItemId = Item.Id,
-                StartDate = StartDate.ToString("yyyy-MM-dd"),
-                EndDate = EndDate.ToString("yyyy-MM-dd")
-            };
-
-            var rental = await _rentalRepository.CreateAsync(request);
+            var rental = await _rentalService.RequestRentalAsync(Item, StartDate, EndDate);
 
             SuccessMessage = rental == null
                 ? "Rental request submitted."
@@ -212,6 +210,20 @@ public partial class ItemDetailViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task ViewReviewsAsync()
+    {
+        if (Item == null)
+        {
+            SetError("Item details are still loading.");
+            return;
+        }
+
+        var itemTitle = Uri.EscapeDataString(Item.Title);
+        await _navigationService.NavigateToAsync(
+            $"{nameof(StarterApp.Views.ReviewsPage)}?itemId={Item.Id}&itemTitle={itemTitle}");
     }
 
 }
