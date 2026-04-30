@@ -1,19 +1,21 @@
+using StarterApp.Repositories;
+
 namespace StarterApp.Services;
 
 public class RentalService : IRentalService
 {
-    private readonly IApiService _apiService;
+    private readonly IRentalRepository _rentalRepository;
 
-    public RentalService(IApiService apiService)
+    public RentalService(IRentalRepository rentalRepository)
     {
-        _apiService = apiService;
+        _rentalRepository = rentalRepository;
     }
 
-    public Task<List<RentalDto>> GetIncomingRentalsAsync() =>
-        _apiService.GetIncomingRentalsAsync();
+    public async Task<List<RentalDto>> GetIncomingRentalsAsync() =>
+        (await _rentalRepository.GetIncomingAsync()).ToList();
 
-    public Task<List<RentalDto>> GetOutgoingRentalsAsync() =>
-        _apiService.GetOutgoingRentalsAsync();
+    public async Task<List<RentalDto>> GetOutgoingRentalsAsync() =>
+        (await _rentalRepository.GetOutgoingAsync()).ToList();
 
     public Task<RentalStatusUpdateDto?> ApproveAsync(RentalDto rental) =>
         UpdateStatusAsync(rental, RentalStatuses.Approved, RentalStatuses.Requested);
@@ -38,7 +40,7 @@ public class RentalService : IRentalService
         if (!validCurrentStatuses.Contains(rental.Status))
             throw new InvalidOperationException($"Cannot change rental from {rental.Status} to {nextStatus}.");
 
-        var result = await _apiService.UpdateRentalStatusAsync(
+        var result = await _rentalRepository.UpdateStatusAsync(
             rental.Id,
             new UpdateRentalStatusRequest { Status = nextStatus });
 

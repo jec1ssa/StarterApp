@@ -100,6 +100,19 @@ public class ApiService : IApiService
         return await response.Content.ReadFromJsonAsync<RentalDto>(_jsonOptions);
     }
 
+    public async Task<RentalDto?> GetRentalByIdAsync(int id)
+    {
+        using var response = await _httpClient.GetAsync($"rentals/{id}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        return await response.Content.ReadFromJsonAsync<RentalDto>(_jsonOptions);
+    }
+
     public async Task<RentalStatusUpdateDto?> UpdateRentalStatusAsync(int rentalId, UpdateRentalStatusRequest request)
     {
         using var message = new HttpRequestMessage(HttpMethod.Patch, $"rentals/{rentalId}/status")
@@ -131,7 +144,45 @@ public class ApiService : IApiService
         return await response.Content.ReadFromJsonAsync<ItemDto>(_jsonOptions);
     }
 
+    public async Task<ItemDto?> UpdateItemAsync(int itemId, UpdateItemRequest request)
+    {
+        using var response = await _httpClient.PutAsJsonAsync($"items/{itemId}", request, _jsonOptions);
 
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        return await response.Content.ReadFromJsonAsync<ItemDto>(_jsonOptions);
+    }
+
+    public async Task<List<ReviewDto>> GetItemReviewsAsync(int itemId)
+    {
+        using var response = await _httpClient.GetAsync($"items/{itemId}/reviews");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        var reviewsResponse = await response.Content.ReadFromJsonAsync<ReviewsResponse>(_jsonOptions);
+        return reviewsResponse?.Reviews ?? new List<ReviewDto>();
+    }
+
+    public async Task<ReviewDto?> CreateReviewAsync(CreateReviewRequest request)
+    {
+        using var response = await _httpClient.PostAsJsonAsync("reviews", request, _jsonOptions);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        return await response.Content.ReadFromJsonAsync<ReviewDto>(_jsonOptions);
+    }
 
     public async Task<List<ItemDto>> GetItemsAsync()
     {

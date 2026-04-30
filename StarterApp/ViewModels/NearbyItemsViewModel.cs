@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using StarterApp.Repositories;
 using StarterApp.Services;
 using System.Collections.ObjectModel;
 
@@ -7,7 +8,7 @@ namespace StarterApp.ViewModels;
 
 public partial class NearbyItemsViewModel : BaseViewModel
 {
-    private readonly IApiService _apiService;
+    private readonly IItemRepository _itemRepository;
     private readonly ILocationService _locationService;
     private readonly INavigationService _navigationService;
 
@@ -30,11 +31,11 @@ public partial class NearbyItemsViewModel : BaseViewModel
     private string resultsSummary = "No search run yet.";
 
     public NearbyItemsViewModel(
-        IApiService apiService,
+        IItemRepository itemRepository,
         ILocationService locationService,
         INavigationService navigationService)
     {
-        _apiService = apiService;
+        _itemRepository = itemRepository;
         _locationService = locationService;
         _navigationService = navigationService;
         Title = "Nearby Items";
@@ -52,7 +53,7 @@ public partial class NearbyItemsViewModel : BaseViewModel
             Categories.Clear();
             Categories.Add(new CategoryDto { Name = "All categories", Slug = "" });
 
-            var categories = await _apiService.GetCategoriesAsync();
+            var categories = await _itemRepository.GetCategoriesAsync();
 
             foreach (var category in categories)
                 Categories.Add(category);
@@ -124,7 +125,7 @@ public partial class NearbyItemsViewModel : BaseViewModel
                 ? null
                 : SelectedCategory.Slug;
 
-            var items = await _apiService.GetNearbyItemsAsync(Latitude, Longitude, RadiusKm, categorySlug);
+            var items = await _itemRepository.GetNearbyAsync(Latitude, Longitude, RadiusKm, categorySlug);
 
             foreach (var item in items)
                 Items.Add(item);

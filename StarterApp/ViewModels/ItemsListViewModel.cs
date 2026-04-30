@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using StarterApp.Repositories;
 using StarterApp.Services;
 using System.Collections.ObjectModel;
 
@@ -7,7 +8,7 @@ namespace StarterApp.ViewModels;
 
 public partial class ItemsListViewModel : BaseViewModel
 {
-    private readonly IApiService _apiService;
+    private readonly IItemRepository _itemRepository;
     private readonly INavigationService _navigationService;
 
     public ObservableCollection<ItemDto> Items { get; } = new();
@@ -15,9 +16,9 @@ public partial class ItemsListViewModel : BaseViewModel
     [ObservableProperty]
     private ItemDto? selectedItem;
 
-    public ItemsListViewModel(IApiService apiService, INavigationService navigationService)
+    public ItemsListViewModel(IItemRepository itemRepository, INavigationService navigationService)
     {
-        _apiService = apiService;
+        _itemRepository = itemRepository;
         _navigationService = navigationService;
         Title = "Rental Marketplace";
     }
@@ -52,7 +53,7 @@ public partial class ItemsListViewModel : BaseViewModel
             ClearError();
             Items.Clear();
 
-            var items = await _apiService.GetItemsAsync();
+            var items = await _itemRepository.GetAllAsync();
 
             foreach (var item in items)
                 Items.Add(item);

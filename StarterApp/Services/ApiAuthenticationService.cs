@@ -6,13 +6,17 @@ namespace StarterApp.Services;
 
 public class ApiAuthenticationService : IAuthenticationService
 {
+    private const string TokenStorageKey = "api_jwt_token";
+    private const string TokenExpiryStorageKey = "api_jwt_expires_at";
+
     private readonly HttpClient _httpClient;
     private User? _currentUser;
+    private DateTime _tokenExpiresAt = DateTime.MinValue;
     private readonly List<string> _currentUserRoles = new();
 
     public event EventHandler<bool>? AuthenticationStateChanged;
 
-    public bool IsAuthenticated => _currentUser != null;
+    public bool IsAuthenticated => _currentUser != null && DateTime.UtcNow < _tokenExpiresAt;
     public User? CurrentUser => _currentUser;
     public List<string> CurrentUserRoles => _currentUserRoles;
 
@@ -36,8 +40,15 @@ public class ApiAuthenticationService : IAuthenticationService
             var token = await response.Content.ReadFromJsonAsync<TokenResponse>();
             _httpClient.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token!.Token);
+            _tokenExpiresAt = token.ExpiresAt.ToUniversalTime();
+
+            await SecureStorage.Default.SetAsync(TokenStorageKey, token.Token);
+            await SecureStorage.Default.SetAsync(TokenExpiryStorageKey, _tokenExpiresAt.ToString("O"));
 
             var meResponse = await _httpClient.GetAsync("users/me");
+            if (!meResponse.IsSuccessStatusCode)
+                return new AuthenticationResult(false, "Login succeeded, but the user profile could not be loaded.");
+
             var profile = await meResponse.Content.ReadFromJsonAsync<UserProfileResponse>();
 
             _currentUser = new User
@@ -88,8 +99,11 @@ public class ApiAuthenticationService : IAuthenticationService
     public Task LogoutAsync()
     {
         _currentUser = null;
+        _tokenExpiresAt = DateTime.MinValue;
         _currentUserRoles.Clear();
         _httpClient.DefaultRequestHeaders.Authorization = null;
+        SecureStorage.Default.Remove(TokenStorageKey);
+        SecureStorage.Default.Remove(TokenExpiryStorageKey);
         AuthenticationStateChanged?.Invoke(this, false);
         return Task.CompletedTask;
     }

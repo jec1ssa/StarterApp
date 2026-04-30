@@ -4,6 +4,7 @@ using StarterApp.Database.Data;
 using StarterApp.Views;
 using System.Diagnostics;
 using StarterApp.Services;
+using StarterApp.Repositories;
 
 namespace StarterApp;
 
@@ -57,6 +58,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<TempViewModel>();
         builder.Services.AddTransient<TempPage>();
         builder.Services.AddSingleton<IApiService, ApiService>();
+        builder.Services.AddSingleton<IItemRepository, ApiItemRepository>();
+        builder.Services.AddSingleton<IRentalRepository, ApiRentalRepository>();
+        builder.Services.AddSingleton<IReviewRepository, ApiReviewRepository>();
         builder.Services.AddSingleton<IRentalService, RentalService>();
         builder.Services.AddSingleton<ILocationService, LocationService>();
         builder.Services.AddTransient<ItemsListViewModel>();

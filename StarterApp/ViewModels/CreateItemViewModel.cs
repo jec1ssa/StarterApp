@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using StarterApp.Repositories;
 using StarterApp.Services;
 using System.Collections.ObjectModel;
 
@@ -7,7 +8,7 @@ namespace StarterApp.ViewModels;
 
 public partial class CreateItemViewModel : BaseViewModel
 {
-    private readonly IApiService _apiService;
+    private readonly IItemRepository _itemRepository;
     private readonly INavigationService _navigationService;
 
     public ObservableCollection<CategoryDto> Categories { get; } = new();
@@ -30,9 +31,9 @@ public partial class CreateItemViewModel : BaseViewModel
     [ObservableProperty]
     private double longitude = -3.1883;
 
-    public CreateItemViewModel(IApiService apiService, INavigationService navigationService)
+    public CreateItemViewModel(IItemRepository itemRepository, INavigationService navigationService)
     {
-        _apiService = apiService;
+        _itemRepository = itemRepository;
         _navigationService = navigationService;
         Title = "Create Item";
     }
@@ -47,7 +48,7 @@ public partial class CreateItemViewModel : BaseViewModel
         {
             ClearError();
 
-            var categories = await _apiService.GetCategoriesAsync();
+            var categories = await _itemRepository.GetCategoriesAsync();
 
             Categories.Clear();
             foreach (var category in categories)
@@ -104,7 +105,7 @@ public partial class CreateItemViewModel : BaseViewModel
                 Longitude = Longitude
             };
 
-            await _apiService.CreateItemAsync(request);
+            await _itemRepository.CreateAsync(request);
 
             await _navigationService.NavigateBackAsync();
         }

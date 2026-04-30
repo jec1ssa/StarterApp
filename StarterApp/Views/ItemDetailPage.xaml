@@ -28,6 +28,42 @@
 
             <Label Text="{Binding Item.IsAvailable, StringFormat='Available: {0}'}" />
 
+            <Label Text="Edit Listing"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   Margin="0,20,0,0"
+                   IsVisible="{Binding CanEditItem}" />
+
+            <Label Text="Title"
+                   IsVisible="{Binding CanEditItem}" />
+            <Entry Text="{Binding EditTitle}"
+                   IsVisible="{Binding CanEditItem}" />
+
+            <Label Text="Description"
+                   IsVisible="{Binding CanEditItem}" />
+            <Editor Text="{Binding EditDescription}"
+                    AutoSize="TextChanges"
+                    HeightRequest="100"
+                    IsVisible="{Binding CanEditItem}" />
+
+            <Label Text="Daily Rate"
+                   IsVisible="{Binding CanEditItem}" />
+            <Entry Text="{Binding EditDailyRate}"
+                   Keyboard="Numeric"
+                   IsVisible="{Binding CanEditItem}" />
+
+            <HorizontalStackLayout Spacing="10"
+                                   IsVisible="{Binding CanEditItem}">
+                <Label Text="Available"
+                       VerticalOptions="Center" />
+                <Switch IsToggled="{Binding EditIsAvailable}" />
+            </HorizontalStackLayout>
+
+            <Button Text="Save Item Changes"
+                    Command="{Binding SaveItemChangesCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                    IsVisible="{Binding CanEditItem}" />
+
             <Label Text="Rental Dates"
        FontSize="20"
        FontAttributes="Bold"

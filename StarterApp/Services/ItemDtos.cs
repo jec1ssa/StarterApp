@@ -73,6 +73,14 @@ public class CreateItemRequest
     public double Longitude { get; set; }
 }
 
+public class UpdateItemRequest
+{
+    public string Title { get; set; } = "";
+    public string Description { get; set; } = "";
+    public decimal DailyRate { get; set; }
+    public bool IsAvailable { get; set; }
+}
+
 public class CreateRentalRequest
 {
     public int ItemId { get; set; }
@@ -118,6 +126,23 @@ public class RentalStatusUpdateDto
     public int Id { get; set; }
     public string Status { get; set; } = "";
     public DateTime UpdatedAt { get; set; }
+}
+
+public class ReviewsResponse
+{
+    public List<ReviewDto> Reviews { get; set; } = new();
+    public decimal AverageRating { get; set; }
+    public int TotalReviews { get; set; }
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+    public int TotalPages { get; set; }
+}
+
+public class CreateReviewRequest
+{
+    public int RentalId { get; set; }
+    public int Rating { get; set; }
+    public string Comment { get; set; } = "";
 }
 
 public static class RentalStatuses
