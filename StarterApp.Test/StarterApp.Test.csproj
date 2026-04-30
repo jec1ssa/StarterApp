@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
@@ -28,7 +30,13 @@
     <Compile Include="..\StarterApp\Services\RentalService.cs" Link="AppSource\Services\RentalService.cs" />
     <Compile Include="..\StarterApp\Services\IReviewService.cs" Link="AppSource\Services\IReviewService.cs" />
     <Compile Include="..\StarterApp\Services\ReviewService.cs" Link="AppSource\Services\ReviewService.cs" />
+    <Compile Include="..\StarterApp\Services\ILocationService.cs" Link="AppSource\Services\ILocationService.cs" />
+    <Compile Include="..\StarterApp\Services\INavigationService.cs" Link="AppSource\Services\INavigationService.cs" />
+    <Compile Include="..\StarterApp\ViewModels\BaseViewModel.cs" Link="AppSource\ViewModels\BaseViewModel.cs" />
+    <Compile Include="..\StarterApp\ViewModels\CreateItemViewModel.cs" Link="AppSource\ViewModels\CreateItemViewModel.cs" />
+    <Compile Include="..\StarterApp\ViewModels\NearbyItemsViewModel.cs" Link="AppSource\ViewModels\NearbyItemsViewModel.cs" />
     <Compile Include="..\StarterApp\Repositories\IRepository.cs" Link="AppSource\Repositories\IRepository.cs" />
+    <Compile Include="..\StarterApp\Repositories\IItemRepository.cs" Link="AppSource\Repositories\IItemRepository.cs" />
     <Compile Include="..\StarterApp\Repositories\IRentalRepository.cs" Link="AppSource\Repositories\IRentalRepository.cs" />
     <Compile Include="..\StarterApp\Repositories\IReviewRepository.cs" Link="AppSource\Repositories\IReviewRepository.cs" />
   </ItemGroup>
