@@ -1,0 +1,32 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Restore, build, and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore test project
+        run: dotnet restore StarterApp.Test/StarterApp.Test.csproj
+
+      - name: Build test project
+        run: dotnet build StarterApp.Test/StarterApp.Test.csproj --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test StarterApp.Test/StarterApp.Test.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
