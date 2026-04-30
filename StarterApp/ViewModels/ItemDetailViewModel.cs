@@ -16,17 +16,16 @@ public partial class ItemDetailViewModel : BaseViewModel
     private ItemDto? item;
 
     [ObservableProperty]
-private DateTime startDate = DateTime.Today;
+    private DateTime startDate = DateTime.Today;
 
-[ObservableProperty]
-private DateTime endDate = DateTime.Today.AddDays(1);
+    [ObservableProperty]
+    private DateTime endDate = DateTime.Today.AddDays(1);
 
-[ObservableProperty]
-private string successMessage = "";
+    [ObservableProperty]
+    private string successMessage = "";
 
-[ObservableProperty]
-private bool hasSuccess;
-
+    [ObservableProperty]
+    private bool hasSuccess;
 
     public ItemDetailViewModel(IApiService apiService)
     {
@@ -65,59 +64,59 @@ private bool hasSuccess;
     }
 
     [RelayCommand]
-private async Task RequestRentalAsync()
-{
-    if (IsBusy)
-        return;
-
-    if (Item == null)
+    private async Task RequestRentalAsync()
     {
-        SetError("Item details are still loading.");
-        return;
-    }
+        if (IsBusy)
+            return;
 
-    if (StartDate.Date < DateTime.Today)
-    {
-        SetError("Start date cannot be in the past.");
-        return;
-    }
-
-    if (EndDate.Date <= StartDate.Date)
-    {
-        SetError("End date must be after start date.");
-        return;
-    }
-
-    try
-    {
-        IsBusy = true;
-        ClearError();
-        SuccessMessage = "";
-        HasSuccess = false;
-
-        var request = new CreateRentalRequest
+        if (Item == null)
         {
-            ItemId = Item.Id,
-            StartDate = StartDate.ToString("yyyy-MM-dd"),
-            EndDate = EndDate.ToString("yyyy-MM-dd")
-        };
+            SetError("Item details are still loading.");
+            return;
+        }
 
-        var rental = await _apiService.CreateRentalAsync(request);
+        if (StartDate.Date < DateTime.Today)
+        {
+            SetError("Start date cannot be in the past.");
+            return;
+        }
 
-        SuccessMessage = rental == null
-            ? "Rental request submitted."
-            : $"Rental request submitted. Status: {rental.Status}";
+        if (EndDate.Date <= StartDate.Date)
+        {
+            SetError("End date must be after start date.");
+            return;
+        }
 
-        HasSuccess = true;
+        try
+        {
+            IsBusy = true;
+            ClearError();
+            SuccessMessage = "";
+            HasSuccess = false;
+
+            var request = new CreateRentalRequest
+            {
+                ItemId = Item.Id,
+                StartDate = StartDate.ToString("yyyy-MM-dd"),
+                EndDate = EndDate.ToString("yyyy-MM-dd")
+            };
+
+            var rental = await _apiService.CreateRentalAsync(request);
+
+            SuccessMessage = rental == null
+                ? "Rental request submitted."
+                : $"Rental request submitted. Status: {rental.Status}";
+
+            HasSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            SetError($"Failed to request rental: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
-    catch (Exception ex)
-    {
-        SetError($"Failed to request rental: {ex.Message}");
-    }
-    finally
-    {
-        IsBusy = false;
-    }
-}
 
 }

@@ -2,6 +2,7 @@
 <ContentPage x:Class="StarterApp.Views.RentalsPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Name="RentalsPageRoot"
              Title="{Binding Title}">
 
     <Grid Padding="20" RowSpacing="12">
@@ -72,6 +73,13 @@
                                        TextColor="#CCCCCC" />
                                 <Label Text="{Binding EndDate, StringFormat='End: {0:dd/MM/yyyy}'}"
                                        TextColor="#CCCCCC" />
+
+                                <HorizontalStackLayout Spacing="8"
+                                                       IsVisible="{Binding CanMarkReturned}">
+                                    <Button Text="Returned"
+                                            Command="{Binding BindingContext.MarkReturnedCommand, Source={x:Reference RentalsPageRoot}}"
+                                            CommandParameter="{Binding .}" />
+                                </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>
@@ -109,6 +117,30 @@
                                        TextColor="#CCCCCC" />
                                 <Label Text="{Binding EndDate, StringFormat='End: {0:dd/MM/yyyy}'}"
                                        TextColor="#CCCCCC" />
+
+                                <HorizontalStackLayout Spacing="8"
+                                                       IsVisible="{Binding CanApprove}">
+                                    <Button Text="Approve"
+                                            Command="{Binding BindingContext.ApproveRentalCommand, Source={x:Reference RentalsPageRoot}}"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Text="Reject"
+                                            Command="{Binding BindingContext.RejectRentalCommand, Source={x:Reference RentalsPageRoot}}"
+                                            CommandParameter="{Binding .}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="8"
+                                                       IsVisible="{Binding CanMarkOutForRent}">
+                                    <Button Text="Out for Rent"
+                                            Command="{Binding BindingContext.MarkOutForRentCommand, Source={x:Reference RentalsPageRoot}}"
+                                            CommandParameter="{Binding .}" />
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Spacing="8"
+                                                       IsVisible="{Binding CanComplete}">
+                                    <Button Text="Complete"
+                                            Command="{Binding BindingContext.CompleteRentalCommand, Source={x:Reference RentalsPageRoot}}"
+                                            CommandParameter="{Binding .}" />
+                                </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

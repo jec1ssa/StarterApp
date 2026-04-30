@@ -17,7 +17,7 @@ public partial class MainViewModel : BaseViewModel
 {
     /// @brief Authentication service for managing user authentication
     private readonly IAuthenticationService _authService;
-    
+
     /// @brief Navigation service for managing page navigation
     private readonly INavigationService _navigationService;
 
@@ -39,11 +39,11 @@ public partial class MainViewModel : BaseViewModel
     /// @brief Default constructor for design-time support
     /// @details Sets the title to "Dashboard"
     public MainViewModel()
-        {
-            // Default constructor for design time support
-            Title = "Dashboard";
-        }
-    
+    {
+        // Default constructor for design time support
+        Title = "Dashboard";
+    }
+
     /// @brief Initializes a new instance of the MainViewModel class
     /// @param authService The authentication service instance
     /// @param navigationService The navigation service instance
@@ -63,7 +63,7 @@ public partial class MainViewModel : BaseViewModel
     {
         CurrentUser = _authService.CurrentUser;
         IsAdmin = _authService.HasRole("Admin");
-        
+
         if (CurrentUser != null)
         {
             WelcomeMessage = $"Welcome, {CurrentUser.FullName}!";
@@ -77,9 +77,9 @@ public partial class MainViewModel : BaseViewModel
     private async Task LogoutAsync()
     {
         var result = await Application.Current.MainPage.DisplayAlert(
-            "Logout", 
-            "Are you sure you want to logout?", 
-            "Yes", 
+            "Logout",
+            "Are you sure you want to logout?",
+            "Yes",
             "No");
 
         if (result)
@@ -89,11 +89,11 @@ public partial class MainViewModel : BaseViewModel
         }
     }
 
-[RelayCommand]
-private async Task NavigateToItemsAsync()
-{
-    await _navigationService.NavigateToAsync(nameof(StarterApp.Views.ItemsListPage));
-}
+    [RelayCommand]
+    private async Task NavigateToItemsAsync()
+    {
+        await _navigationService.NavigateToAsync(nameof(StarterApp.Views.ItemsListPage));
+    }
 
 
     /// @brief Navigates to the user profile page
@@ -126,15 +126,15 @@ private async Task NavigateToItemsAsync()
             await Application.Current.MainPage.DisplayAlert("Access Denied", "You don't have permission to access admin features.", "OK");
             return;
         }
-        
+
         await _navigationService.NavigateToAsync("UserListPage");
     }
 
     [RelayCommand]
-private async Task NavigateToRentalsAsync()
-{
-    await _navigationService.NavigateToAsync(nameof(StarterApp.Views.RentalsPage));
-}
+    private async Task NavigateToRentalsAsync()
+    {
+        await _navigationService.NavigateToAsync(nameof(StarterApp.Views.RentalsPage));
+    }
 
 
     /// @brief Refreshes the dashboard data
@@ -147,7 +147,7 @@ private async Task NavigateToRentalsAsync()
         {
             IsBusy = true;
             LoadUserData();
-            
+
             // Simulate refresh delay
             await Task.Delay(1000);
         }

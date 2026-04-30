@@ -79,6 +79,12 @@ public class RentalDto
     public string Status { get; set; } = "";
     public decimal TotalPrice { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    public bool CanApprove => Status == RentalStatuses.Requested;
+    public bool CanReject => Status == RentalStatuses.Requested;
+    public bool CanMarkOutForRent => Status == RentalStatuses.Approved;
+    public bool CanMarkReturned => Status == RentalStatuses.OutForRent || Status == RentalStatuses.Overdue;
+    public bool CanComplete => Status == RentalStatuses.Returned;
 }
 
 public class RentalsResponse
@@ -87,3 +93,25 @@ public class RentalsResponse
     public int TotalRentals { get; set; }
 }
 
+public class UpdateRentalStatusRequest
+{
+    public string Status { get; set; } = "";
+}
+
+public class RentalStatusUpdateDto
+{
+    public int Id { get; set; }
+    public string Status { get; set; } = "";
+    public DateTime UpdatedAt { get; set; }
+}
+
+public static class RentalStatuses
+{
+    public const string Requested = "Requested";
+    public const string Approved = "Approved";
+    public const string Rejected = "Rejected";
+    public const string OutForRent = "Out for Rent";
+    public const string Overdue = "Overdue";
+    public const string Returned = "Returned";
+    public const string Completed = "Completed";
+}

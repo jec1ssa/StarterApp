@@ -7,9 +7,9 @@ public class ApiService : IApiService
 {
     private readonly HttpClient _httpClient;
     private readonly JsonSerializerOptions _jsonOptions = new(JsonSerializerDefaults.Web)
-{
-    PropertyNameCaseInsensitive = true
-};
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
 
     public ApiService(HttpClient httpClient)
@@ -27,69 +27,86 @@ public class ApiService : IApiService
     }
 
     public async Task<List<CategoryDto>> GetCategoriesAsync()
-{
-    using var response = await _httpClient.GetAsync("categories");
-    response.EnsureSuccessStatusCode();
-
-    var categoriesResponse = await response.Content.ReadFromJsonAsync<CategoriesResponse>(_jsonOptions);
-    return categoriesResponse?.Categories ?? new List<CategoryDto>();
-}
-
-public async Task<List<RentalDto>> GetIncomingRentalsAsync()
-{
-    using var response = await _httpClient.GetAsync("rentals/incoming");
-
-    if (!response.IsSuccessStatusCode)
     {
-        var errorText = await response.Content.ReadAsStringAsync();
-        throw new InvalidOperationException(errorText);
+        using var response = await _httpClient.GetAsync("categories");
+        response.EnsureSuccessStatusCode();
+
+        var categoriesResponse = await response.Content.ReadFromJsonAsync<CategoriesResponse>(_jsonOptions);
+        return categoriesResponse?.Categories ?? new List<CategoryDto>();
     }
 
-    var rentalsResponse = await response.Content.ReadFromJsonAsync<RentalsResponse>(_jsonOptions);
-    return rentalsResponse?.Rentals ?? new List<RentalDto>();
-}
-
-public async Task<List<RentalDto>> GetOutgoingRentalsAsync()
-{
-    using var response = await _httpClient.GetAsync("rentals/outgoing");
-
-    if (!response.IsSuccessStatusCode)
+    public async Task<List<RentalDto>> GetIncomingRentalsAsync()
     {
-        var errorText = await response.Content.ReadAsStringAsync();
-        throw new InvalidOperationException(errorText);
+        using var response = await _httpClient.GetAsync("rentals/incoming");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        var rentalsResponse = await response.Content.ReadFromJsonAsync<RentalsResponse>(_jsonOptions);
+        return rentalsResponse?.Rentals ?? new List<RentalDto>();
     }
 
-    var rentalsResponse = await response.Content.ReadFromJsonAsync<RentalsResponse>(_jsonOptions);
-    return rentalsResponse?.Rentals ?? new List<RentalDto>();
-}
-
-
-public async Task<RentalDto?> CreateRentalAsync(CreateRentalRequest request)
-{
-    using var response = await _httpClient.PostAsJsonAsync("rentals", request, _jsonOptions);
-
-    if (!response.IsSuccessStatusCode)
+    public async Task<List<RentalDto>> GetOutgoingRentalsAsync()
     {
-        var errorText = await response.Content.ReadAsStringAsync();
-        throw new InvalidOperationException(errorText);
+        using var response = await _httpClient.GetAsync("rentals/outgoing");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        var rentalsResponse = await response.Content.ReadFromJsonAsync<RentalsResponse>(_jsonOptions);
+        return rentalsResponse?.Rentals ?? new List<RentalDto>();
     }
 
-    return await response.Content.ReadFromJsonAsync<RentalDto>(_jsonOptions);
-}
 
-
-public async Task<ItemDto?> CreateItemAsync(CreateItemRequest request)
-{
-    using var response = await _httpClient.PostAsJsonAsync("items", request, _jsonOptions);
-
-    if (!response.IsSuccessStatusCode)
+    public async Task<RentalDto?> CreateRentalAsync(CreateRentalRequest request)
     {
-        var errorText = await response.Content.ReadAsStringAsync();
-        throw new InvalidOperationException(errorText);
+        using var response = await _httpClient.PostAsJsonAsync("rentals", request, _jsonOptions);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        return await response.Content.ReadFromJsonAsync<RentalDto>(_jsonOptions);
     }
 
-    return await response.Content.ReadFromJsonAsync<ItemDto>(_jsonOptions);
-}
+    public async Task<RentalStatusUpdateDto?> UpdateRentalStatusAsync(int rentalId, UpdateRentalStatusRequest request)
+    {
+        using var message = new HttpRequestMessage(HttpMethod.Patch, $"rentals/{rentalId}/status")
+        {
+            Content = JsonContent.Create(request, options: _jsonOptions)
+        };
+
+        using var response = await _httpClient.SendAsync(message);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        return await response.Content.ReadFromJsonAsync<RentalStatusUpdateDto>(_jsonOptions);
+    }
+
+    public async Task<ItemDto?> CreateItemAsync(CreateItemRequest request)
+    {
+        using var response = await _httpClient.PostAsJsonAsync("items", request, _jsonOptions);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorText = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(errorText);
+        }
+
+        return await response.Content.ReadFromJsonAsync<ItemDto>(_jsonOptions);
+    }
 
 
 
