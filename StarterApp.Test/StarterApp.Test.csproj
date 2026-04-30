@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StarterApp.Database\StarterApp.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\StarterApp\Services\ItemDtos.cs" Link="AppSource\Services\ItemDtos.cs" />
+    <Compile Include="..\StarterApp\Services\IRentalService.cs" Link="AppSource\Services\IRentalService.cs" />
+    <Compile Include="..\StarterApp\Services\RentalService.cs" Link="AppSource\Services\RentalService.cs" />
+    <Compile Include="..\StarterApp\Services\IReviewService.cs" Link="AppSource\Services\IReviewService.cs" />
+    <Compile Include="..\StarterApp\Services\ReviewService.cs" Link="AppSource\Services\ReviewService.cs" />
+    <Compile Include="..\StarterApp\Repositories\IRepository.cs" Link="AppSource\Repositories\IRepository.cs" />
+    <Compile Include="..\StarterApp\Repositories\IRentalRepository.cs" Link="AppSource\Repositories\IRentalRepository.cs" />
+    <Compile Include="..\StarterApp\Repositories\IReviewRepository.cs" Link="AppSource\Repositories\IReviewRepository.cs" />
+  </ItemGroup>
+
+</Project>
