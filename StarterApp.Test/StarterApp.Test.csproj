@@ -21,10 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StarterApp.Database\StarterApp.Database.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include="..\StarterApp\Services\ItemDtos.cs" Link="AppSource\Services\ItemDtos.cs" />
     <Compile Include="..\StarterApp\Services\IRentalService.cs" Link="AppSource\Services\IRentalService.cs" />
     <Compile Include="..\StarterApp\Services\RentalService.cs" Link="AppSource\Services\RentalService.cs" />

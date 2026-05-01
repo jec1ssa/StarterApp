@@ -52,6 +52,50 @@ public class ReviewServiceTests
         Assert.Contains("Item id must be valid.", exception.Message);
     }
 
+    [Fact]
+    public async Task SubmitReviewAsync_WhenRentalIdIsInvalid_ThrowsArgumentException()
+    {
+        // Arrange
+        var service = new ReviewService(new FakeReviewRepository());
+
+        // Act
+        var exception = await Assert.ThrowsAsync<ArgumentException>(
+            () => service.SubmitReviewAsync(0, 5, "Comment"));
+
+        // Assert
+        Assert.Contains("Rental id must be valid.", exception.Message);
+    }
+
+    [Fact]
+    public async Task SubmitReviewAsync_WhenCommentTooLong_ThrowsInvalidOperationException()
+    {
+        // Arrange
+        var service = new ReviewService(new FakeReviewRepository());
+        var longComment = new string('x', 501);
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.SubmitReviewAsync(42, 5, longComment));
+
+        // Assert
+        Assert.Equal("Comment must be 500 characters or fewer.", exception.Message);
+    }
+
+    [Fact]
+    public async Task SubmitReviewAsync_WhenCommentHasWhitespace_TrimsBeforeCreate()
+    {
+        // Arrange
+        var repository = new FakeReviewRepository();
+        var service = new ReviewService(repository);
+
+        // Act
+        var review = await service.SubmitReviewAsync(42, 4, "  Great item  ");
+
+        // Assert
+        Assert.NotNull(review);
+        Assert.Equal("Great item", repository.LastRequest?.Comment);
+    }
+
     private sealed class FakeReviewRepository : IReviewRepository
     {
         public CreateReviewRequest? LastRequest { get; private set; }
